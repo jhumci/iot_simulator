@@ -37,11 +37,10 @@ class dispenser(object):
 
   def fill(self, bottle):
 
-    
+
     # TODO: Add some randomness
     # Get the fill amount
     print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, bottle.id, self.color))
-   
     bottle.color_levels_grams[self.color] = self.get_fill_amount(bottle.recipe.color_levels_grams[self.color])
 
 
@@ -54,6 +53,7 @@ class dispenser(object):
     # here we must way for all other dispensers
 
     yield  env.timeout(20)
+
 
 class Conveyor(object):
     def __init__(self,env, time_between_stations_s):
