@@ -32,8 +32,31 @@ class dispenser(object):
       amount_grams = self.fill_level_grams
     return amount_grams
 
-  def fill(self, amount_grams):
-    yield  env.timeout(amount_grams)
+  def fill(self, bottle):
+    # TODO: Add some randomness
+    # Get the fill amount
+    print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, bottle.id, self.color))
+   
+    bottle.color_levels_grams[self.color] = self.get_fill_amount(bottle.recipe.color_levels_grams[self.color])
+
+
+
+    # TODO: Is hard coded ot take as long a the slowest dispenser
+    # must be based on the mac fill time of all other stations
+    # Fill with the fill amount. Takes flexible time depending on the amount
+    # we must also wait for all other dispensers before we move the conveyor belt
+    #yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
+    # here we must way for all other dispensers
+    yield  env.timeout(20)
+
+class conveyor(object):
+    def __init__(self,time_between_stations_s):
+        self.env = env
+        self.res = simpy.Resource(env, capacity=1)
+        self.time_between_stations_s = time_between_stations_s
+
+    def run():
+        yield env.timeout(self.time_between_stations_s) 
 
 #%%
 class Bottle(object):
@@ -44,54 +67,44 @@ class Bottle(object):
         self.id = id
         self.recipe = recipe
 
-    def fill_me(self, dispenser):
-
-        # Bottle blocks first dispenser
-        request = dispenser.res.request()
-        yield request
-        print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, self.id, dispenser.color))
-
-        # TODO: Add some randomness
-        # Get the fill amount
-        self.color_levels_grams[dispenser.color] = dispenser.get_fill_amount(self.recipe.color_levels_grams[dispenser.color])
-        
-        # Fill with the fill amount. Takes flexible time depending on the amount
-        # we must also wait for all other dispensers before we move the conveyor belt
-        yield self.env.process(dispenser_1.fill(self.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(self.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(self.recipe.color_levels_grams[dispenser_2.color] ))
-        # here we must way for all other dispensers
-
-        # Releases if finished
-        yield dispenser.res.release(request) 
-        #print('In bottle {} there are {} g of {}'.format(self.id, self.color_levels_grams[dispenser.color],  dispenser.color))
-        #print("Red dispenser is at: {}".format(dispenser.fill_level_grams))
 
     def run(self):
 
         # Conveyor or first dispenser
         #yield env.timeout(TIME_MOVEMENT)
 
-        yield  self.env.process(self.fill_me(dispenser_1))
-
-
+        request = dispenser_1.res.request()
+        yield request
+        yield self.env.process(dispenser_1.fill(self))
+        yield dispenser_1.res.release(request) 
+  
+      
+        
         #print('Moving to next station \n')
         #yield env.timeout(TIME_MOVEMENT)
 
 
         # Bottle blocks second dispenser
-        #yield  self.env.process(self.fill_me(dispenser_2))
+        request = dispenser_2.res.request()
+        yield request
+        yield self.env.process(dispenser_2.fill(self))
+        yield dispenser_2.res.release(request) 
      
         #print('Moving to next station \n')
-        yield env.timeout(TIME_MOVEMENT)
+        #yield env.timeout(TIME_MOVEMENT)
 
 
 
         # Bottle blocks third dispenser
-        yield  self.env.process(self.fill_me(dispenser_3))
+        request = dispenser_3.res.request()
+        yield request
+        yield self.env.process(dispenser_3.fill(self))
+        yield dispenser_3.res.release(request) 
        
         #print('Moving bottle to geht weight \n')
-        yield env.timeout(TIME_MOVEMENT)
+        #yield env.timeout(TIME_MOVEMENT)
         print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispenser_1.color] + self.color_levels_grams[dispenser_2.color] + self.color_levels_grams[dispenser_3.color]))
-
+  
 
 
 # %%
