@@ -10,16 +10,14 @@ TIME_MOVEMENT = 2 # Time to move between stations
 
 # A recipe that describes the mixture and number of bottles to be filled
 class Recipe(object):
-  def __init__(self, red_grams, yellow_grams, blue_grams, date, number):
-    self.red_grams = red_grams
-    self.yellow_grams = yellow_grams
-    self.blue_grams = blue_grams
+  def __init__(self, color_levels_grams, date, number):
+    self.color_levels_grams = color_levels_grams
     self.date = date
     self.number = number
 #%%
 
-# A dispencer that holds an amount of pellets
-class Dispencer(object):
+# A dispenser that holds an amount of pellets
+class dispenser(object):
   def __init__(self, env, fill_level_grams,color):
     self.env = env
     self.fill_level_grams = fill_level_grams
@@ -42,55 +40,57 @@ class Bottle(object):
     def __init__(self, env, id, recipe):
         self.env = env
         self.action = env.process(self.run())
-        self.red_grams = 0
-        self.yellow_grams = 0
-        self.blue_grams = 0
+        self.color_levels_grams = dict.fromkeys(recipe.color_levels_grams, 0)
         self.id = id
         self.recipe = recipe
 
-    def fill_me(self, dispencer):
-        print("Got to red!")
-        # Bottle blocks first dispencer
-        request = dispencer.res.request()
-        yield request
-        print('Start filling bottle {} at {} dispenser at {}s'.format(self.id ,dispencer.color, self.env.now))
+    def fill_me(self, dispenser):
 
+        # Bottle blocks first dispenser
+        request = dispenser.res.request()
+        yield request
+        print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, self.id, dispenser.color))
+
+        # TODO: Add some randomness
         # Get the fill amount
-        self.red_grams = dispencer.get_fill_amount(self.recipe.red_grams)
+        self.color_levels_grams[dispenser.color] = dispenser.get_fill_amount(self.recipe.color_levels_grams[dispenser.color])
+        
         # Fill with the fill amount. Takes flexible time depending on the amount
-        # we must also wait for all other dispencers before we move the conveyor belt
-        yield self.env.process(dispencer_1.fill(self.recipe.red_grams)) & env.process(dispencer_2.fill(self.recipe.yellow_grams)) & env.process(dispencer_3.fill(self.recipe.blue_grams))
+        # we must also wait for all other dispensers before we move the conveyor belt
+        yield self.env.process(dispenser_1.fill(self.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(self.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(self.recipe.color_levels_grams[dispenser_2.color] ))
+        # here we must way for all other dispensers
+
         # Releases if finished
-        yield dispencer.res.release(request) 
-        print('In bottle {} there are {} g of red'.format(self.id ,self.red_grams))
-        print("Red dispenser is at: {}".format(dispencer.fill_level_grams))
+        yield dispenser.res.release(request) 
+        #print('In bottle {} there are {} g of {}'.format(self.id, self.color_levels_grams[dispenser.color],  dispenser.color))
+        #print("Red dispenser is at: {}".format(dispenser.fill_level_grams))
 
     def run(self):
 
-        # Conveyor or first dispencer
+        # Conveyor or first dispenser
         #yield env.timeout(TIME_MOVEMENT)
 
-        yield  self.env.process(self.fill_me(dispencer_1))
+        yield  self.env.process(self.fill_me(dispenser_1))
 
-        # here we must way for all other dispencers
-        print('Moving to next station \n')
+
+        #print('Moving to next station \n')
+        #yield env.timeout(TIME_MOVEMENT)
+
+
+        # Bottle blocks second dispenser
+        #yield  self.env.process(self.fill_me(dispenser_2))
+     
+        #print('Moving to next station \n')
         yield env.timeout(TIME_MOVEMENT)
 
 
-        # Bottle blocks second dispencer
-        yield  self.env.process(self.fill_me(dispencer_2))
 
-        print('Moving to next station \n')
+        # Bottle blocks third dispenser
+        yield  self.env.process(self.fill_me(dispenser_3))
+       
+        #print('Moving bottle to geht weight \n')
         yield env.timeout(TIME_MOVEMENT)
-
-
-
-        # Bottle blocks third dispencer
-        yield  self.env.process(self.fill_me(dispencer_3))
-
-        print('Moving to geht weight \n')
-        yield env.timeout(TIME_MOVEMENT)
-        print('There are {}g in bottle {}.'.format(self.blue_grams + self.yellow_grams+ self.red_grams, self.id))
+        print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispenser_1.color] + self.color_levels_grams[dispenser_2.color] + self.color_levels_grams[dispenser_3.color]))
 
 
 
@@ -104,13 +104,13 @@ def setup(env, num_bottles, recipe):
 # %%
 env = simpy.Environment()
 
-recipe_1 = Recipe(10,20,15,2022,20)
+recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %%
 
-dispencer_1 = Dispencer(env, 100, "red")
-dispencer_2 = Dispencer(env, 100, "blue")
-dispencer_3 = Dispencer(env, 100, "green")
+dispenser_1 = dispenser(env, 100, "red")
+dispenser_2 = dispenser(env, 100, "blue")
+dispenser_3 = dispenser(env, 100, "green")
 
 # %%
 
