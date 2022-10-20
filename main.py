@@ -1,4 +1,7 @@
-#%%
+#%% TODO:
+# - add conveyor belt
+# - add randomness
+# - add json-export
 
 #!pip install simpy
 import simpy
@@ -33,6 +36,8 @@ class dispenser(object):
     return amount_grams
 
   def fill(self, bottle):
+
+    
     # TODO: Add some randomness
     # Get the fill amount
     print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, bottle.id, self.color))
@@ -47,15 +52,16 @@ class dispenser(object):
     # we must also wait for all other dispensers before we move the conveyor belt
     #yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
     # here we must way for all other dispensers
+
     yield  env.timeout(20)
 
-class conveyor(object):
-    def __init__(self,time_between_stations_s):
+class Conveyor(object):
+    def __init__(self,env, time_between_stations_s):
         self.env = env
         self.res = simpy.Resource(env, capacity=1)
         self.time_between_stations_s = time_between_stations_s
 
-    def run():
+    def run(self):
         yield env.timeout(self.time_between_stations_s) 
 
 #%%
@@ -125,6 +131,9 @@ dispenser_1 = dispenser(env, 100, "red")
 dispenser_2 = dispenser(env, 100, "blue")
 dispenser_3 = dispenser(env, 100, "green")
 
+# %%
+
+conveyor = Conveyor(env, 2)
 # %%
 
 env.process(setup(env, num_bottles = 2, recipe = recipe_1))
