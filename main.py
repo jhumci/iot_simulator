@@ -6,13 +6,17 @@
 #!pip install simpy
 import simpy
 import logging
+import numpy as np
 logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.INFO)
 
 TIME_FACTOR = 1   # Time to till one gram of peletts
 TIME_MOVEMENT = 2 # Time to move between stations
 TIME_FOR_SLOWEST_STATION = 20 # Time for the station all others have to wait for
-THRESHOLD = 100 # Refill Threshold for dispensers
-MAXIMUM_DISPENCER_SIZE_G = 1000 # Refill Threshold for dispensers
+THRESHOLD = 40 # Refill Threshold for dispensers
+MAXIMUM_DISPENCER_SIZE_G = 200 # Refill Threshold for dispensers
+SIGMA_FILLING_ERROR = 0.3 
+SIM_TIME = 1000
+
 #%%
 
 # A recipe that describes the mixture and number of bottles to be filled
@@ -32,12 +36,18 @@ class dispenser(object):
     self.color = color
 
   def get_fill_amount(self, amount_grams):
+
+    # If there is still something in there
     if self.fill_level_grams > amount_grams:
-      self.fill_level_grams = self.fill_level_grams - amount_grams
+      # get a amount out with variation sigma
+      random_amount_grams = np.random.normal(amount_grams,SIGMA_FILLING_ERROR,1)[0]
+      self.fill_level_grams = self.fill_level_grams - random_amount_grams
+      return random_amount_grams
     else:
+      # geht everything out
       self.fill_level_grams = 0
       amount_grams = self.fill_level_grams
-    return amount_grams
+      return amount_grams
 
   def fill(self, bottle):
 
@@ -46,8 +56,6 @@ class dispenser(object):
     # Get the fill amount
     print('T={}s: Start filling bottle {} at {} dispenser'.format(self.env.now, bottle.id, self.color))
     bottle.color_levels_grams[self.color] = self.get_fill_amount(bottle.recipe.color_levels_grams[self.color])
-
-
 
     # TODO: Is hard coded ot take as long a the slowest dispenser
     # must be based on the mac fill time of all other stations
@@ -111,7 +119,7 @@ def dispenser_control(env, dispensers):
       for dispenser in dispensers:
         if dispenser.fill_level_grams < THRESHOLD:
             # We need to call the tank truck now!
-            print("T= {}s: Refilling dispenser {} now!".format(dispenser.color, env.now))
+            print("T= {}s: Refilling dispenser {} now!".format(env.now, dispenser.color))
             # Wait for the tank truck to arrive and refuel the station
             #yield env.timeout(100)
             dispenser.fill_level_grams = MAXIMUM_DISPENCER_SIZE_G
@@ -145,7 +153,7 @@ conveyor = Conveyor(env, TIME_MOVEMENT)
 # %%
 env.process(dispenser_control(env, dispensers))
 env.process(setup(env, num_bottles = 100, recipe = recipe_1))
-env.run()
+env.run(until=SIM_TIME)
 
 
 # %%
