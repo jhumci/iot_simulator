@@ -106,7 +106,7 @@ class Bottle(object):
             yield dispenser.res.release(request) 
 
             #print('Moving bottle to geht weight \n')
-            #yield self.env.process(conveyor.run())     
+
         print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispenser_1.color] + self.color_levels_grams[dispenser_2.color] + self.color_levels_grams[dispenser_3.color]))
         logging.info(self.final_iot_message()) 
 
