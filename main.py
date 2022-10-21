@@ -67,6 +67,7 @@ class dispenser(object):
 
     yield env.timeout(TIME_FOR_SLOWEST_STATION)
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
+    
     yield env.timeout(TIME_MOVEMENT)
     
   def iot_message(self):
@@ -97,7 +98,6 @@ class Bottle(object):
     def run(self):
 
         # Conveyor or first dispenser
-        #yield env.timeout(TIME_MOVEMENT)
 
         for dispenser in dispensers:
             request = dispenser.res.request()
@@ -126,11 +126,27 @@ def dispenser_control(env, dispensers):
 
         yield env.timeout(10)  # Check every 10 seconds
 
+def trigger_emergency_stop(env, min_frequency, max_frequency):
+    """Periodically stopp everything."""
+    while True:
+      env.process(stop_everything(env, 10,20))
+      print("Something called the emergency stop!")
+      wait_time = np.random.uniform(low=min_frequency, high=max_frequency)
+      yield env.timeout(wait_time)  # Check every 10 seconds
+
+# TODO: Make the other processes wait
+def stop_everything(env, min_duration=10, max_duration=20):
+    """Periodically stopp everything."""
+    duration = np.random.uniform(low=min_duration, high=max_duration)
+    print("Stopping for {}!".format(duration))
+    env.timeout(duration) 
+    yield env.timeout(duration) 
+     
+
 # %%
 def setup(env, num_bottles, recipe):
   for i in range(num_bottles):
     bottle = Bottle(env,i, recipe)
-    #env.process(bottle.run())
   yield env.timeout(0)
 
 # %%
@@ -151,9 +167,12 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 conveyor = Conveyor(env, TIME_MOVEMENT)
 
 # %%
+#env.process(trigger_emergency_stop(env, 10,50))
 env.process(dispenser_control(env, dispensers))
 env.process(setup(env, num_bottles = 100, recipe = recipe_1))
 env.run(until=SIM_TIME)
 
+
+# %%
 
 # %%
