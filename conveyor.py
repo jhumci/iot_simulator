@@ -5,14 +5,11 @@
 
 #!pip install simpy
 import simpy
-import logging
-logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.INFO)
 
 TIME_FACTOR = 1   # Time to till one gram of peletts
 TIME_MOVEMENT = 2 # Time to move between stations
 TIME_FOR_SLOWEST_STATION = 20 # Time for the station all others have to wait for
-THRESHOLD = 100 # Refill Threshold for dispensers
-MAXIMUM_DISPENCER_SIZE_G = 1000 # Refill Threshold for dispensers
+
 #%%
 
 # A recipe that describes the mixture and number of bottles to be filled
@@ -55,14 +52,10 @@ class dispenser(object):
     # we must also wait for all other dispensers before we move the conveyor belt
     # yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
 
-    logging.info(self.iot_message()) 
-
     yield env.timeout(TIME_FOR_SLOWEST_STATION)
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
     yield env.timeout(TIME_MOVEMENT)
-    
-  def iot_message(self):
-    return '{{"dispenser": {}, "time" : {}, "fill_level_grams : {}"}}'.format(self.color, env.now, self.fill_level_grams)
+
 
 class Conveyor(object):
     def __init__(self,env, time_between_stations_s):
@@ -82,9 +75,6 @@ class Bottle(object):
         self.id = id
         self.recipe = recipe
 
-    def final_iot_message(self):
-      return '{{"bottle": {}, "time" : {}, "final_weight : {}"}}'.format(self.id, env.now, self.color_levels_grams[dispenser_1.color] + self.color_levels_grams[dispenser_2.color] + self.color_levels_grams[dispenser_3.color])
-
 
     def run(self):
 
@@ -100,23 +90,8 @@ class Bottle(object):
             #print('Moving bottle to geht weight \n')
             #yield self.env.process(conveyor.run())     
         print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispenser_1.color] + self.color_levels_grams[dispenser_2.color] + self.color_levels_grams[dispenser_3.color]))
-        logging.info(self.final_iot_message()) 
+  
 
-
-# %%
-
-def dispenser_control(env, dispensers):
-    """Periodically check the level of the dispensers and refill the level falls below a threshold."""
-    while True:
-      for dispenser in dispensers:
-        if dispenser.fill_level_grams < THRESHOLD:
-            # We need to call the tank truck now!
-            print("T= {}s: Refilling dispenser {} now!".format(dispenser.color, env.now))
-            # Wait for the tank truck to arrive and refuel the station
-            #yield env.timeout(100)
-            dispenser.fill_level_grams = MAXIMUM_DISPENCER_SIZE_G
-
-        yield env.timeout(10)  # Check every 10 seconds
 
 # %%
 def setup(env, num_bottles, recipe):
@@ -132,9 +107,9 @@ recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %%
 
-dispenser_1 = dispenser(env, MAXIMUM_DISPENCER_SIZE_G, "red")
-dispenser_2 = dispenser(env, MAXIMUM_DISPENCER_SIZE_G, "blue")
-dispenser_3 = dispenser(env, MAXIMUM_DISPENCER_SIZE_G, "green")
+dispenser_1 = dispenser(env, 100, "red")
+dispenser_2 = dispenser(env, 100, "blue")
+dispenser_3 = dispenser(env, 100, "green")
 
 dispensers = [dispenser_1, dispenser_2, dispenser_3]
 
@@ -143,9 +118,8 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 conveyor = Conveyor(env, TIME_MOVEMENT)
 
 # %%
-env.process(dispenser_control(env, dispensers))
-env.process(setup(env, num_bottles = 100, recipe = recipe_1))
-env.run()
 
+env.process(setup(env, num_bottles = 4, recipe = recipe_1))
+env.run()
 
 # %%
