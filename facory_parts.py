@@ -2,6 +2,7 @@
 import simpy
 import logging
 import numpy as np
+import mqtt
 
 #%% Load Simulation Parameters 
 # TODO: Should be parameters 
@@ -10,12 +11,13 @@ import config
 
 # A dispenser that holds an amount of pellets
 class dispenser(object):
-  def __init__(self, env, fill_level_grams,color,max_size_g):
+  def __init__(self, env, fill_level_grams,color,max_size_g, mqtt_client):
     self.env = env
     self.fill_level_grams = fill_level_grams
     self.res = simpy.Resource(env, capacity=1)
     self.color = color
     self.max_size_g = max_size_g
+    self.mqtt_client = mqtt_client
 
   def get_fill_amount(self, amount_grams):
 
@@ -46,12 +48,11 @@ class dispenser(object):
     # yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
 
     logging.info(self.iot_message(self.env)) 
-
+    self.mqtt_client.publish_payload("dispenser_" + self.color, self.iot_message(self.env))
     yield self.env.timeout(config.TIME_FOR_SLOWEST_STATION)
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
     
     yield self.env.timeout(config.TIME_MOVEMENT)
-    
   def iot_message(self,env):
     return '{{"dispenser": {}, "time" : {}, "fill_level_grams : {}"}}'.format(self.color, env.now, self.fill_level_grams)
 

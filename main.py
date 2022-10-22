@@ -27,14 +27,17 @@ from facory_parts import dispenser
 # from facory_parts import Conveyor
 
 # %%
+from mqtt import MqttClient
+# %%
 
+mqtt_client = MqttClient("IoT-Simulator",config.MQTT_BROKER, config.MQTT_PORT)
 
      
 
 # %%
 def setup(env, num_bottles, recipe):
   for i in range(num_bottles):
-    bottle = Bottle(env,i, recipe, dispensers)
+    bottle = Bottle(env,i, recipe, dispensers,mqtt_client)
   yield env.timeout(0)
 
 # %%
@@ -44,9 +47,9 @@ recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %%
 
-dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G)
-dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G)
-dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G)
+dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
+dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
+dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
 
 dispensers = [dispenser_1, dispenser_2, dispenser_3]
 
@@ -63,4 +66,7 @@ env.run(until=config.SIM_TIME)
 
 # %%
 
+# %%
+mqtt_client.publish_payload("test", """{{"so":"what"}}""")
+#mqtt_client.publish_payload("test2", """{{"so":"what"}}""")
 # %%
