@@ -7,7 +7,11 @@
 import simpy
 import logging
 import numpy as np
+
+
 logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.INFO)
+
+# %%
 
 TIME_FACTOR = 1   # Time to till one gram of peletts
 TIME_MOVEMENT = 2 # Time to move between stations
@@ -16,6 +20,8 @@ THRESHOLD = 40 # Refill Threshold for dispensers
 MAXIMUM_DISPENCER_SIZE_G = 200 # Refill Threshold for dispensers
 SIGMA_FILLING_ERROR = 0.3 
 SIM_TIME = 1000
+NUM_BOTTLES = 100 # Number of Bottles to run
+
 
 #%%
 
@@ -169,7 +175,7 @@ conveyor = Conveyor(env, TIME_MOVEMENT)
 # %%
 #env.process(trigger_emergency_stop(env, 10,50))
 env.process(dispenser_control(env, dispensers))
-env.process(setup(env, num_bottles = 100, recipe = recipe_1))
+env.process(setup(env, num_bottles = NUM_BOTTLES, recipe = recipe_1))
 env.run(until=SIM_TIME)
 
 
