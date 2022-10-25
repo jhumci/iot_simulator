@@ -54,7 +54,7 @@ class dispenser(object):
     
     yield self.env.timeout(config.TIME_MOVEMENT)
   def iot_message(self,env):
-    return '{{"dispenser": {}, "time" : {}, "fill_level_grams : {}"}}'.format(self.color, env.now, self.fill_level_grams)
+    return '{{"dispenser": "{}", "time" : {}, "fill_level_grams" : {}}}'.format(self.color, env.now, self.fill_level_grams)
 
 
 class Conveyor(object):

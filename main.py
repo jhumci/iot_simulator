@@ -7,6 +7,7 @@
 import simpy
 import logging
 import numpy as np
+import time
 
 
 logging.basicConfig(filename='example.log',  level=logging.INFO)
@@ -42,6 +43,7 @@ def setup(env, num_bottles, recipe):
 
 # %%
 env = simpy.Environment()
+#env = simpy.rt.RealtimeEnvironment(factor=1, strict = True)
 
 recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
@@ -64,9 +66,4 @@ env.process(setup(env, num_bottles = config.NUM_BOTTLES, recipe = recipe_1))
 env.run(until=config.SIM_TIME)
 
 
-# %%
-
-# %%
-mqtt_client.publish_payload("test", """{{"so":"what"}}""")
-#mqtt_client.publish_payload("test2", """{{"so":"what"}}""")
 # %%
