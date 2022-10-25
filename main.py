@@ -42,8 +42,8 @@ def setup(env, num_bottles, recipe):
   yield env.timeout(0)
 
 # %%
-env = simpy.Environment()
-#env = simpy.rt.RealtimeEnvironment(factor=1, strict = True)
+#env = simpy.Environment()
+env = simpy.rt.RealtimeEnvironment(factor=1, strict = False)
 
 recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 

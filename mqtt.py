@@ -27,6 +27,18 @@ class MqttClient(object):
 
         #self.client.loop_forever()
 
+
+        self.client.on_disconnect = self.on_disconnect
+
+    #def on_disconnect(self.client, userdata=None, self.rc):
+    def on_disconnect(self):
+        if self.client.rc != 0:
+            print("Unexpected MQTT disconnection. Attempting to reconnect.")
+            try:
+                self.client.reconnect()
+            except:
+                print("Reconnection did FAIL!")
+
     def publish_payload(self, topic, payload):
         self.client.publish(topic, payload=payload, qos=1)
 
