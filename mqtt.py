@@ -25,19 +25,11 @@ class MqttClient(object):
         # a single publish, this can also be done in loops, etc.
         #client.publish(topic, payload="hot", qos=1)
 
+        # TODO: Make the client reconnect
+        # http://www.steves-internet-guide.com/loop-python-mqtt-client/
         #self.client.loop_forever()
 
-
-        self.client.on_disconnect = self.on_disconnect
-
-    #def on_disconnect(self.client, userdata=None, self.rc):
-    def on_disconnect(self):
-        if self.client.rc != 0:
-            print("Unexpected MQTT disconnection. Attempting to reconnect.")
-            try:
-                self.client.reconnect()
-            except:
-                print("Reconnection did FAIL!")
+        self.client.loop_start()
 
     def publish_payload(self, topic, payload):
         self.client.publish(topic, payload=payload, qos=1)
