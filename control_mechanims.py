@@ -19,7 +19,7 @@ def dispenser_control(env, dispensers, threshold):
             # We need to call the tank truck now!
             print("T= {}s: Refilling dispenser {} now!".format(env.now, dispenser.color))
             # Wait for the tank truck to arrive and refuel the station
-            #yield env.timeout(100)
+            yield env.timeout(100)
             dispenser.fill_level_grams = dispenser.max_size_g
 
         yield env.timeout(10)  # Check every 10 seconds

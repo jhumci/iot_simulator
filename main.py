@@ -36,10 +36,19 @@ mqtt_client = MqttClient("IoT-Simulator",config.MQTT_BROKER, config.MQTT_PORT)
      
 
 # %%
-def setup(env, num_bottles, recipe):
+def setup_limited(env, num_bottles, recipe, mqtt_client):
   for i in range(num_bottles):
     bottle = Bottle(env,i, recipe, dispensers,mqtt_client)
   yield env.timeout(0)
+
+# %%
+def setup_unlimited(env, recipe, mqtt_client):
+  bottle_counter = 1
+  while True:
+    bottle = Bottle(env,bottle_counter, recipe, dispensers,mqtt_client)
+    bottle_counter = bottle_counter +1 
+  yield env.timeout(0)
+
 
 # %%
 #env = simpy.Environment()
@@ -62,7 +71,8 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 # %%
 #env.process(trigger_emergency_stop(env, 10,50))
 env.process(dispenser_control(env, dispensers, config.THRESHOLD))
-env.process(setup(env, num_bottles = config.NUM_BOTTLES, recipe = recipe_1))
+env.process(setup_limited(env, config.NUM_BOTTLES, recipe_1, mqtt_client))
+#env.process(setup_unlimited(env, recipe_1, mqtt_client))
 env.run(until=config.SIM_TIME)
 
 
