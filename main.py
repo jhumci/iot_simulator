@@ -74,8 +74,8 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 # %%
 #env.process(trigger_emergency_stop(env, 10,50))
 env.process(dispenser_control(env, dispensers, config.THRESHOLD))
-env.process(setup_limited(env, config.NUM_BOTTLES, recipe_1, mqtt_client))
-#env.process(setup_unlimited(env, recipe_1, mqtt_client))
+#env.process(setup_limited(env, config.NUM_BOTTLES, recipe_1, mqtt_client))
+env.process(setup_unlimited(env, recipe_1, mqtt_client))
 env.run(until=config.SIM_TIME)
 
 
