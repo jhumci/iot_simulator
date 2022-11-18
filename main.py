@@ -1,7 +1,9 @@
 #%% TODO:
+# - add lichtschranke
 # - add conveyor belt
 # - add randomness
 # - add json-export
+
 
 #!pip install simpy
 import simpy
@@ -14,6 +16,7 @@ logging.basicConfig(filename='example.log',  level=logging.INFO)
 
 #%% Load Simulation Parameters
 import config
+import mqtt_credentials
 
 #%%
 
@@ -31,7 +34,7 @@ from facory_parts import dispenser
 from mqtt import MqttClient
 # %%
 
-mqtt_client = MqttClient("IoT-Simulator",config.MQTT_BROKER, config.MQTT_PORT)
+mqtt_client = MqttClient("IoT-Simulator",mqtt_credentials.MQTT_BROKER, mqtt_credentials.MQTT_PORT)
 
      
 

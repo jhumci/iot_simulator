@@ -7,7 +7,7 @@ import paho.mqtt.client as paho
 from paho import mqtt
 import threading
 import config
-
+import mqtt_credentials
 
 
 
@@ -20,7 +20,7 @@ class MqttClient():
         # enable TLS for secure connection
         self.client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
         # set username and password
-        self.client.username_pw_set(config.MQTT_USER, config.MQTT_USER)
+        self.client.username_pw_set(mqtt_credentials.MQTT_USER, mqtt_credentials.MQTT_USER)
         # connect to HiveMQ Cloud on port 8883 (default for MQTT)
         self.client.connect(broker, port)
         # http://www.steves-internet-guide.com/python-mqtt-client-changes/
@@ -47,11 +47,3 @@ class MqttClient():
         self.client.publish(topic, payload=payload, qos=1)
 
 
-
-# %%
-
-#mqtt_client = MqttClient("IoT-Simulator",MQTT_BROKER, MQTT_PORT)
-
-# %%
-# mqtt_client.publish_payload("test", """{{"so":"what"}}""")
-# %%
