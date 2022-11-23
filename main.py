@@ -23,22 +23,23 @@ from control_mechanims import dispenser_control
 from production_planning import Bottle
 from production_planning import Recipe
 from facory_parts import dispenser
-from mqtt import MqttClient
+from mqtt import MqttClientHandler
 
 # %% Define Connection to MQTT Broker
 
-mqtt_client = MqttClient("IoT-Simulator",mqtt_credentials.MQTT_BROKER, mqtt_credentials.MQTT_PORT)
+mqtt_client_handler = MqttClientHandler("IoT-Simulator",mqtt_credentials.MQTT_BROKER, mqtt_credentials.MQTT_PORT)
 
 
 # %%
-def setup_unlimited(env, recipe, mqtt_client):
+def setup_unlimited(env, recipe, mqtt_client_handler):
   bottle_counter = 1
   while True:
-    bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client)
+    bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client_handler)
     env.process(bottle.run(dispensers, env))
     bottle_counter = bottle_counter +1 
     print("Bottle {} created".format(bottle_counter))
 
+    break
 
 
 
@@ -51,9 +52,9 @@ recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 # %% Define the dispensers in the factory
 # dispensers have a fill process
 
-dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
-dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
-dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client)
+dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
+dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
+dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
 
 dispensers = [dispenser_1, dispenser_2, dispenser_3]
 
@@ -63,7 +64,7 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 env.process(dispenser_control(env, dispensers, config.THRESHOLD))
 
 # Start the process that creates new bottles
-env.process(setup_unlimited(env, recipe_1, mqtt_client))
+env.process(setup_unlimited(env, recipe_1, mqtt_client_handler))
 
 # Run the simulation
 
