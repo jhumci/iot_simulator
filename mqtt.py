@@ -27,7 +27,7 @@ class MqttClientHandler():
         # http://www.steves-internet-guide.com/python-mqtt-client-changes/
         # a single publish, this can also be done in loops, etc.
         #client.publish(topic, payload="hot", qos=1)
-        #self.client.on_connect = self.on_connect
+        self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
         self.client.on_publish = self.on_publish
 
@@ -43,32 +43,33 @@ class MqttClientHandler():
         #clientloop_thread.start()
         
     def connect_to_broker(self, broker, port):
-        self.client.connect(host=broker, port=port, keepalive=120)
+        self.client.connect_async(host=broker, port=port, keepalive=120)
         self.client.loop_start()
         
         while not self.client.is_connected(): #TODO for ->fehlermeldung
             time.sleep(0.2)
-        return self.client
-
      
-    def on_connect(client, userdata, flags, rc):
-        if rc==0:
-            print("connected OK Returned code=",rc)
-            client.connected_flag = True  # set flag
-        else:
-            print("Bad connection Returned code=",rc)
-            client.bad_connection_flag = True
-    
+        def on_connect(client, userdata, flags, rc):
+            if rc==0:
+                print("connected OK Returned code=",rc)
+                client.connected_flag = True  # set flag
+            else:
+                print("Bad connection Returned code=",rc)
+                client.bad_connection_flag = True
+        
+        return self.client   
 
-    def on_disconnect(client, userdata, rc):
+    def on_disconnect(self, client, userdata, rc):
 
         client.connected_flag = False
         client.disconnect_flag = True
 
-    def on_publish(client, userdata, msgID):
+    def on_publish(self,client, userdata, msgID):
         print("published")
 
     def publish_payload(self, topic, payload):
         self.client.publish(topic, payload=payload, qos=1)
 
 
+
+# %%
