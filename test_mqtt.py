@@ -19,3 +19,5 @@ counter = 0
 while True:
     mqtt_client_handler.publish_payload( topic = "Test", payload =str(counter))
     time.sleep(10)
+    counter = counter + 1
+# %%

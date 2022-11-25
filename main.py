@@ -35,9 +35,10 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
   bottle_counter = 1
   while True:
     bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client_handler)
-    env.process(bottle.run(dispensers, env))
+    yield env.process(bottle.run(dispensers, env))
     bottle_counter = bottle_counter +1 
     print("Bottle {} created".format(bottle_counter))
+
 
     break
 
@@ -46,7 +47,7 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
 # %% Define the Environment
 
 #env = simpy.Environment()
-env = simpy.rt.RealtimeEnvironment(factor=1)
+env = simpy.rt.RealtimeEnvironment(factor=10)
 recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %% Define the dispensers in the factory
@@ -63,9 +64,11 @@ dispensers = [dispenser_1, dispenser_2, dispenser_3]
 # Starte the process, that continuously checks the current fill level of the dispensers
 env.process(dispenser_control(env, dispensers, config.THRESHOLD))
 
+# %%
 # Start the process that creates new bottles
 env.process(setup_unlimited(env, recipe_1, mqtt_client_handler))
 
+# %%
 # Run the simulation
 
 env.run()

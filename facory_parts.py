@@ -46,10 +46,10 @@ class dispenser(object):
     # Fill with the fill amount. Takes flexible time depending on the amount
     # we must also wait for all other dispensers before we move the conveyor belt
     # yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
-
+    yield self.env.timeout(config.TIME_FOR_SLOWEST_STATION)
     logging.info(self.iot_message(self.env)) 
     self.mqtt_client.publish_payload("dispenser_" + self.color, self.iot_message(self.env))
-    yield self.env.timeout(config.TIME_FOR_SLOWEST_STATION)
+
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
     
     yield self.env.timeout(config.TIME_MOVEMENT)
