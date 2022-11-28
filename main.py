@@ -4,7 +4,7 @@
 # - add randomness
 # - add json-export
 # - unimited bottle creator. 1. Start process after each bottle is created. 2. Delete Bottles 
-
+# https://simpy.readthedocs.io/en/latest/examples/carwash.html
 
 #!pip install simpy
 import simpy
@@ -35,19 +35,19 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
   bottle_counter = 1
   while True:
     bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client_handler)
-    yield env.process(bottle.run(dispensers, env))
+    env.process(bottle.run(dispensers, env))
+    yield env.timeout(22)    
+    print("Bottle {} created at {}".format(bottle_counter,env.now))
     bottle_counter = bottle_counter +1 
-    print("Bottle {} created".format(bottle_counter))
 
-
-    break
-
+    if bottle_counter == 10:
+      break
 
 
 # %% Define the Environment
 
-#env = simpy.Environment()
-env = simpy.rt.RealtimeEnvironment(factor=10)
+env = simpy.Environment()
+#env = simpy.rt.RealtimeEnvironment(factor=1)
 recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %% Define the dispensers in the factory
