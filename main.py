@@ -40,14 +40,16 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
     print("Bottle {} created at {}".format(bottle_counter,env.now))
     bottle_counter = bottle_counter +1 
 
+''' for debugging
     if bottle_counter == 10:
       break
-
+'''
 
 # %% Define the Environment
 
-env = simpy.Environment()
-#env = simpy.rt.RealtimeEnvironment(factor=1)
+#env = simpy.Environment()
+# TODO: Where is the simulation too slow?
+env = simpy.rt.RealtimeEnvironment(factor=1,strict=False)
 recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
 
 # %% Define the dispensers in the factory
