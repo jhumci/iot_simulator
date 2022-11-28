@@ -31290,3 +31290,40 @@ INFO:root:{"dispenser": "green", "time" : 240, "fill_level_grams" : 64.600001262
 INFO:root:{"bottle": "9", "time" : 242, "final_weight" : 44.77304404108056}
 INFO:root:MQTT Connected
 INFO:root:MQTT Connected
+INFO:root:MQTT Connected
+INFO:root:{"dispenser": "red", "time" : 20, "fill_level_grams" : 189.95150255202523}
+INFO:root:{"dispenser": "red", "time" : 42, "fill_level_grams" : 179.80611017002613}
+INFO:root:{"dispenser": "blue", "time" : 42, "fill_level_grams" : 180.0244284731551}
+INFO:root:{"dispenser": "red", "time" : 64, "fill_level_grams" : 170.04175621633894}
+INFO:root:{"dispenser": "blue", "time" : 64, "fill_level_grams" : 159.82306540163069}
+INFO:root:{"dispenser": "green", "time" : 64, "fill_level_grams" : 184.7500218156327}
+INFO:root:{"bottle": "1", "time" : 66, "final_weight" : 45.27404715918698}
+INFO:root:{"dispenser": "red", "time" : 86, "fill_level_grams" : 160.13942458191576}
+INFO:root:{"dispenser": "blue", "time" : 86, "fill_level_grams" : 139.95792374280785}
+INFO:root:{"dispenser": "green", "time" : 86, "fill_level_grams" : 169.5843703356706}
+INFO:root:{"bottle": "2", "time" : 88, "final_weight" : 45.5124069334856}
+INFO:root:{"dispenser": "red", "time" : 108, "fill_level_grams" : 150.58259903504444}
+INFO:root:{"dispenser": "blue", "time" : 108, "fill_level_grams" : 119.5353917030404}
+INFO:root:{"dispenser": "green", "time" : 108, "fill_level_grams" : 155.025681806699}
+INFO:root:{"bottle": "3", "time" : 110, "final_weight" : 44.18818414148163}
+INFO:root:{"dispenser": "red", "time" : 130, "fill_level_grams" : 140.01897450028355}
+INFO:root:{"dispenser": "blue", "time" : 130, "fill_level_grams" : 100.15117651461195}
+INFO:root:{"dispenser": "green", "time" : 130, "fill_level_grams" : 140.1888272225541}
+INFO:root:{"bottle": "4", "time" : 132, "final_weight" : 45.16171825833554}
+INFO:root:{"dispenser": "red", "time" : 152, "fill_level_grams" : 129.84511146103904}
+INFO:root:{"dispenser": "blue", "time" : 152, "fill_level_grams" : 79.87450612239408}
+INFO:root:{"dispenser": "green", "time" : 152, "fill_level_grams" : 124.61299681013026}
+INFO:root:{"bottle": "5", "time" : 154, "final_weight" : 44.51687114772363}
+INFO:root:{"dispenser": "red", "time" : 174, "fill_level_grams" : 120.01631775864742}
+INFO:root:{"dispenser": "blue", "time" : 174, "fill_level_grams" : 60.47814733972435}
+INFO:root:{"dispenser": "green", "time" : 174, "fill_level_grams" : 109.98470338899178}
+INFO:root:{"bottle": "6", "time" : 176, "final_weight" : 45.46858834811724}
+INFO:root:{"dispenser": "red", "time" : 196, "fill_level_grams" : 109.86773063358459}
+INFO:root:{"dispenser": "blue", "time" : 196, "fill_level_grams" : 41.136534989512754}
+INFO:root:{"dispenser": "green", "time" : 196, "fill_level_grams" : 95.17345665495955}
+INFO:root:{"bottle": "7", "time" : 198, "final_weight" : 44.38146855594647}
+INFO:root:{"dispenser": "blue", "time" : 218, "fill_level_grams" : 20.923575360904966}
+INFO:root:{"dispenser": "green", "time" : 218, "fill_level_grams" : 79.93978141914457}
+INFO:root:{"bottle": "8", "time" : 220, "final_weight" : 44.4040812884182}
+INFO:root:{"dispenser": "green", "time" : 240, "fill_level_grams" : 64.90727464759024}
+INFO:root:{"bottle": "9", "time" : 242, "final_weight" : 45.39405352522495}
