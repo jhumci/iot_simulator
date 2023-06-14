@@ -19,7 +19,7 @@ class Bottle(object):
         self.dispensers = dispensers
         self.id = id
         self.recipe = recipe
-        self.action = env.process(self.run(dispensers,env))
+        #self.action = env.process(self.run(dispensers,env))
         self.color_levels_grams = dict.fromkeys(recipe.color_levels_grams, 0)
         self.mqtt_client = mqtt_client
 
