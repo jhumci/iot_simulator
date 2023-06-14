@@ -3,6 +3,7 @@ import simpy
 import logging
 import numpy as np
 import mqtt
+import time
 
 #%% Load Simulation Parameters 
 # TODO: Should be parameters 
@@ -18,13 +19,15 @@ class dispenser(object):
     self.color = color
     self.max_size_g = max_size_g
     self.mqtt_client = mqtt_client
+    self.additional_variance = np.random.uniform(1,2) 
 
   def get_fill_amount(self, amount_grams):
 
     # If there is still something in there
     if self.fill_level_grams > amount_grams:
       # get a amount out with variation sigma
-      random_amount_grams = np.random.normal(amount_grams,config.SIGMA_FILLING_ERROR,1)[0]
+      mean_amount_grams = amount_grams+(config.FILLING_ERROR_SENSITIVITY_FILL_LEVEL*((self.fill_level_grams-self.max_size_g)/self.max_size_g))
+      random_amount_grams = np.random.normal(mean_amount_grams,config.SIGMA_FILLING_ERROR,1)[0]
       self.fill_level_grams = self.fill_level_grams - random_amount_grams
       return random_amount_grams
     else:
@@ -47,14 +50,15 @@ class dispenser(object):
     # we must also wait for all other dispensers before we move the conveyor belt
     # yield self.env.process(dispenser_1.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_2.fill(bottle.recipe.color_levels_grams[dispenser_1.color] )) & self.env.process(dispenser_3.fill(bottle.recipe.color_levels_grams[dispenser_2.color] ))
     yield self.env.timeout(config.TIME_FOR_SLOWEST_STATION)
-    logging.info(self.iot_message(self.env)) 
-    self.mqtt_client.publish_payload("dispenser_" + self.color, self.iot_message(self.env))
+    logging.info(self.iot_message(self.env, bottle)) 
+    self.mqtt_client.publish_payload("dispenser_" + self.color, self.iot_message(self.env, bottle))
 
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
     
     yield self.env.timeout(config.TIME_MOVEMENT)
-  def iot_message(self,env):
-    return '{{"dispenser": "{}", "time" : {}, "fill_level_grams" : {}}}'.format(self.color, env.now, self.fill_level_grams)
+
+  def iot_message(self,env, bottle):
+    return '{{"dispenser": "{}","bottle": "{}", "time" : {}, "fill_level_grams" : {}}}'.format(self.color, bottle.id, int(time.time()), self.fill_level_grams)
 
 
 class Conveyor(object):
@@ -65,3 +69,4 @@ class Conveyor(object):
 
     def run(self):
         yield self.env.timeout(self.time_between_stations_s) 
+# %%

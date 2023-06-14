@@ -1,6 +1,7 @@
 import simpy
 import logging
 import mqtt
+import time
 
 # A recipe that describes the mixture and number of bottles to be filled
 class Recipe(object):
@@ -24,7 +25,7 @@ class Bottle(object):
         self.mqtt_client = mqtt_client
 
     def final_iot_message(self,env):
-      return '{{"bottle": "{}", "time" : {}, "final_weight" : {}}}'.format(self.id, env.now, self.color_levels_grams[self.dispensers[0].color] + self.color_levels_grams[self.dispensers[1].color] + self.color_levels_grams[self.dispensers[2].color])
+      return '{{"bottle": "{}", "time" : {}, "final_weight" : {}}}'.format(self.id, int(time.time()) , self.color_levels_grams[self.dispensers[0].color] + self.color_levels_grams[self.dispensers[1].color] + self.color_levels_grams[self.dispensers[2].color])
 
 
     def run(self, dispensers, env):
