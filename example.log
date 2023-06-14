@@ -39447,3 +39447,11 @@ INFO:root:{"dispenser": "red","bottle": "11", "time" : 240, "fill_level_grams" :
 INFO:root:{"dispenser": "blue","bottle": "10", "time" : 240, "fill_level_grams" : 0}
 INFO:root:{"dispenser": "green","bottle": "9", "time" : 240, "fill_level_grams" : 66.49214178063954}
 INFO:root:{"bottle": "9", "time" : 242, "final_weight" : 44.07810764560485}
+INFO:root:MQTT Connected
+INFO:root:{"dispenser": "red","bottle": "1", "time" : 1686724786, "fill_level_grams" : 190.2311663008039}
+INFO:root:{"dispenser": "red","bottle": "2", "time" : 1686724808, "fill_level_grams" : 180.30745157677268}
+INFO:root:{"dispenser": "blue","bottle": "1", "time" : 1686724808, "fill_level_grams" : 179.9674106806352}
+INFO:root:{"dispenser": "red","bottle": "3", "time" : 1686724830, "fill_level_grams" : 169.87380607801018}
+INFO:root:{"dispenser": "blue","bottle": "2", "time" : 1686724830, "fill_level_grams" : 160.20021447287905}
+INFO:root:{"dispenser": "green","bottle": "1", "time" : 1686724830, "fill_level_grams" : 185.00357527987228}
+INFO:root:{"bottle": "1", "time" : 1686724832, "final_weight" : 44.79784773868863}
