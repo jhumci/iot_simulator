@@ -88,7 +88,7 @@ class dispenser(object):
     yield self.env.timeout(config.TIME_MOVEMENT)
 
   def compute_vibration(self, fill_amount, temperature_c, fill_level):
-    return fill_amount * 4.1 * (1 *  (20 -temperature_c)) - fill_level/200 + 10
+    return 10 + fill_amount * 10 + 2 * (20 -temperature_c) - 1 * fill_level/200
 
 
   def iot_message(self,env, bottle):

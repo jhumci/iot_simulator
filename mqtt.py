@@ -8,7 +8,6 @@ from paho import mqtt
 import mqtt_credentials
 import logging
 
-
 logging.basicConfig(filename='example.log',  level=logging.INFO)
 
 
@@ -16,7 +15,7 @@ class MqttClientHandler():
     def __init__(self,client_id,broker, port):
         print(client_id)
 
-        self.client = paho.Client(client_id=client_id, protocol=paho.MQTTv5)
+        self.client = paho.Client(paho.CallbackAPIVersion.VERSION2)
         
         # enable TLS for secure connection
         self.client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)

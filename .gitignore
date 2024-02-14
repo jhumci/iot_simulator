@@ -1,3 +1,5 @@
 /example.log
 /mqtt_credentials.py
 example.log
+/.venv
+/.vscode
