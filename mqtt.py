@@ -4,7 +4,6 @@
 # %%
 import time
 import paho.mqtt.client as paho
-from paho import mqtt
 import mqtt_credentials
 import logging
 
@@ -18,9 +17,9 @@ class MqttClientHandler():
         self.client = paho.Client(paho.CallbackAPIVersion.VERSION2)
         
         # enable TLS for secure connection
-        self.client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+        #self.client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
         # set username and password
-        self.client.username_pw_set(mqtt_credentials.MQTT_USER, mqtt_credentials.MQTT_USER)
+        self.client.username_pw_set(mqtt_credentials.MQTT_USER, mqtt_credentials.MQTT_PASSWORD)
 
         self.client.on_connect = self.on_connect
         #self.client.on_disconnect = self.on_disconnect
@@ -40,16 +39,15 @@ class MqttClientHandler():
     def connect_to_broker(self, broker, port):
         self.client.connect_async(host=broker, port=port, keepalive=120)
         
-        # This connects, but does it reconnect?
-
-        ## It should: http://www.steves-internet-guide.com/loop-python-mqtt-client/
         self.client.loop_start()
-        #self.client.loop_forever()
         
-        while not self.client.is_connected(): #TODO for ->fehlermeldung
+        timeout = time.time() + 10   # 10 seconds from now
+        while not self.client.is_connected():
+            if time.time() > timeout:
+                raise Exception("Could not connect to the broker")
             time.sleep(0.2)
         
-        return self.client   
+        return self.client
 
 
 

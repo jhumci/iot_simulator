@@ -27,8 +27,9 @@ from mqtt import MqttClientHandler
 
 # %% Define Connection to MQTT Broker
 
+print("Connecting to MQTT Broker")
 mqtt_client_handler = MqttClientHandler("IoT-Simulator",mqtt_credentials.MQTT_BROKER, mqtt_credentials.MQTT_PORT)
-
+print("Connected to MQTT Broker")
 
 # %%
 def setup_unlimited(env, recipe, mqtt_client_handler):

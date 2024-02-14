@@ -51822,3 +51822,8 @@ INFO:root:MQTT Connected
 INFO:root:MQTT Connected
 INFO:root:MQTT Connected
 INFO:root:MQTT Connected
+WARNING:root:MQTT Connection failed!
+WARNING:root:MQTT Connection failed!
+WARNING:root:MQTT Connection failed!
+WARNING:root:MQTT Connection failed!
+INFO:root:MQTT Connected
