@@ -92,7 +92,7 @@ class dispenser(object):
 
 
   def iot_message(self,env, bottle):
-    return '{{"dispenser": "{}","bottle": "{}", "time" : {}, "fill_level_grams" : {}}}'.format(self.color, bottle.id, int(time.time()), self.fill_level_grams)
+    return '{{"dispenser": "{}","bottle": "{}", "time" : {}, "fill_level_grams" : {}, "recipe" : {}}}'.format(self.color, bottle.id, int(time.time()), self.fill_level_grams, bottle.recipe.number)
 
   def iot_message_temp(self,env, temperature):
     return '{{"time" : {}, "temperature_C" : {}}}'.format(int(time.time()), temperature)

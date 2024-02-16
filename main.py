@@ -56,7 +56,8 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
 #env = simpy.Environment()
 # TODO: Why is the simulation too slow?
 env = simpy.rt.RealtimeEnvironment(factor=1,strict=False)
-recipe_1 = Recipe({"red":10,"blue":20,"green":15},2022,20)
+recipe_1 = Recipe({"red":15,"blue":25,"green":5},"2024-02-16",20)
+recipe_1 = Recipe({"red":10,"blue":20,"green":15},"2024-02-16",21)
 
 # %% Define the dispensers in the factory
 # dispensers have a fill process
