@@ -80,9 +80,9 @@ class dispenser(object):
 
     self.temperature = self.generate_temperature(int(time.time()), 10,  24 * 60 * 60, 1)
 
-    self.mqtt_client.publish_payload("dispenser_" + self.color, self.iot_message(self.env, bottle))
-    self.mqtt_client.publish_payload("temperature", self.iot_message_temp(self.env, self.temperature))
-    self.mqtt_client.publish_payload("dispenser_" + self.color + "/vibration", self.iot_message_vibration(self.env, bottle))
+    self.mqtt_client.publish_payload("iot1/teaching_factory/dispenser_" + self.color, self.iot_message(self.env, bottle))
+    self.mqtt_client.publish_payload("iot1/teaching_factory/temperature", self.iot_message_temp(self.env, self.temperature))
+    self.mqtt_client.publish_payload("iot1/teaching_factory/dispenser_" + self.color + "/vibration", self.iot_message_vibration(self.env, bottle))
     #yield env.timeout(self.get_fill_amount(bottle.recipe.color_levels_grams[self.color]))
     
     yield self.env.timeout(config.TIME_MOVEMENT)

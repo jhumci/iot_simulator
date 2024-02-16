@@ -67,8 +67,8 @@ class MqttClientHandler():
         print("published")
     '''
 
-    def publish_payload(self, topic, payload):
-        self.client.publish(topic, payload=payload, qos=1)
+    def publish_payload(self, topic, payload, retain=False):
+        self.client.publish(topic, payload=payload, qos=1, retain=retain)
 
     # BUG: I dont know why I ahve to add those properties, did not find them in the docs
     def on_connect(self, client, userdata, flags, rc, properties):

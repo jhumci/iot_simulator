@@ -9,6 +9,9 @@ class Recipe(object):
     self.color_levels_grams = color_levels_grams
     self.date = date
     self.number = number
+
+  def start_iot_message(self):
+    return '{{"recipe": "{}", "time" : {}, "color_levels_grams" : {}}}'.format(self.date, int(time.time()), self.color_levels_grams)
 #%%
 
 
@@ -42,5 +45,5 @@ class Bottle(object):
 
         print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispensers[0].color] + self.color_levels_grams[dispensers[1].color] + self.color_levels_grams[dispensers[2].color]))
         logging.info(self.final_iot_message(env))
-        self.mqtt_client.publish_payload("final_weight", self.final_iot_message(self.env))
+        self.mqtt_client.publish_payload("iot1/teaching_factory/scale/final_weight", self.final_iot_message(self.env))
    
