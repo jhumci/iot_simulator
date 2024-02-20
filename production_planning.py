@@ -3,6 +3,7 @@ import logging
 import mqtt
 import time
 import numpy as np
+import json
 
 # A recipe that describes the mixture and number of bottles to be filled
 class Recipe(object):
@@ -12,7 +13,7 @@ class Recipe(object):
     self.number = number
 
   def start_iot_message(self):
-    return '{{"recipe": "{}", "time" : {}, "color_levels_grams" : {}}}'.format(self.date, int(time.time()), self.color_levels_grams)
+    return '{{"recipe": "{}", "time" : {}, "color_levels_grams" : {}}}'.format(self.date, int(time.time()), json.dumps(self.color_levels_grams))
 #%%
 
 
@@ -28,7 +29,7 @@ class Bottle(object):
         self.color_levels_grams = dict.fromkeys(recipe.color_levels_grams, 0)
         self.mqtt_client = mqtt_client
         # make 1 in 42 bottles randomly cracked using numpy
-        self.is_cracked = np.random.choice([True, False], p=[1/42, 41/42])
+        self.is_cracked = np.random.choice(["1", "0"], p=[1/42, 41/42])
         self.drop_vibration = ["{:.10f}".format(num) for num in self.drop_vibration()]
 
     def drop_vibration(self):
@@ -51,10 +52,10 @@ class Bottle(object):
       return '{{"bottle": "{}", "time" : {}, "final_weight" : {}}}'.format(self.id, int(time.time()) , self.color_levels_grams[self.dispensers[0].color] + self.color_levels_grams[self.dispensers[1].color] + self.color_levels_grams[self.dispensers[2].color])
 
     def drop_iot_message(self,env):
-      return '{{"bottle": "{}", "drop_vibration" : {}}}'.format(self.id, self.drop_vibration)
+      return '{{"bottle": "{}", "drop_vibration" : {}}}'.format(self.id, json.dumps(self.drop_vibration))
 
-    def ground_truth(self):
-      return '{{"bottle": "{}", "is_cracked" : {}}}'.format(self.id, self.is_cracked)
+    def ground_truth(self,env):
+      return '{{"bottle": "{}", "is_cracked" : {}}}'.format(self.id, json.dumps(self.is_cracked))
 
     def run(self, dispensers, env):
 
@@ -72,4 +73,4 @@ class Bottle(object):
         logging.info(self.final_iot_message(env))
         self.mqtt_client.publish_payload("iot1/teaching_factory/scale/final_weight", self.final_iot_message(self.env))
         self.mqtt_client.publish_payload("iot1/teaching_factory/drop_vibration", self.drop_iot_message(self.env))
-   
+        self.mqtt_client.publish_payload("iot1/teaching_factory/ground_truth", self.ground_truth(self.env))   
