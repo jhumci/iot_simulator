@@ -1,0 +1,6 @@
+services:
+  iot_simuator:
+    build:
+      context: iot_simuator
+      target: builder
+
