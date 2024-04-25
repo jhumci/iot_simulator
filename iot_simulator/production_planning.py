@@ -4,6 +4,7 @@ import mqtt
 import time
 import numpy as np
 import json
+import config
 
 # A recipe that describes the mixture and number of bottles to be filled
 class Recipe(object):
@@ -71,6 +72,6 @@ class Bottle(object):
 
         print('T={}s: Bottle {} is finished There are {}g in there.'.format(self.env.now, self.id, self.color_levels_grams[dispensers[0].color] + self.color_levels_grams[dispensers[1].color] + self.color_levels_grams[dispensers[2].color]))
         logging.info(self.final_iot_message(env))
-        self.mqtt_client.publish_payload("iot1/teaching_factory/scale/final_weight", self.final_iot_message(self.env))
-        self.mqtt_client.publish_payload("iot1/teaching_factory/drop_vibration", self.drop_iot_message(self.env))
-        self.mqtt_client.publish_payload("iot1/teaching_factory/ground_truth", self.ground_truth(self.env))   
+        self.mqtt_client.publish_payload(config.TOPIC_PREFIX + "scale/final_weight", self.final_iot_message(self.env))
+        self.mqtt_client.publish_payload(config.TOPIC_PREFIX +"drop_vibration", self.drop_iot_message(self.env))
+        self.mqtt_client.publish_payload(config.TOPIC_PREFIX + "ground_truth", self.ground_truth(self.env))   

@@ -36,13 +36,13 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
   bottle_counter = 1
   # Send the Recipe to the MQTT Broker
   
-  mqtt_client_handler.publish_payload("iot1/teaching_factory/recipe", recipe.start_iot_message(), retain=True)
+  mqtt_client_handler.publish_payload(config.TOPIC_PREFIX + "recipe", recipe.start_iot_message(), retain=True)
 
 
   while True:
     bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client_handler)
     env.process(bottle.run(dispensers, env))
-    yield env.timeout(22)    
+    yield env.timeout(2)    
     print("Bottle {} created at {}".format(bottle_counter,env.now))
     bottle_counter = bottle_counter +1 
 
