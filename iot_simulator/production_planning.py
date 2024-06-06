@@ -37,14 +37,14 @@ class Bottle(object):
       """make a vibration signal which i 0.2 seconds long and has a f
        different pattern (harmonic) for cracked and uncracked bottles
        also make it a litte random for each bottle"""
-      if self.is_cracked:
+      if self.is_cracked == "1":
           # make it a high frequency sinus signal with a little noise
           #return np.random.normal(100, 10, 1) + np.random.normal(100, 10, 0.1)
           # make it an harminic signal
-          return np.sin(2 * np.pi * 100 * np.linspace(0, 0.2, 100)) + np.sin(2 * np.pi * 200 * np.linspace(0, 0.2, 100)) + np.sin(2 * np.pi * 300 * np.linspace(0, 0.2, 100) + np.sin(2 * np.pi * 400 * np.linspace(0, 0.2, 100)))
+          return (1.3 * np.sin(2 * np.pi * 700 * np.linspace(0, 0.2, 500)) + 1.9 * np.sin(2 * np.pi * 300 * np.linspace(0, 0.2, 500) + np.sin(2 * np.pi * 400 * np.linspace(0, 0.2, 500)))) *  np.random.normal(1, 0.15, 500)
       else:
           # make it a low frequency sinus signal with a little noise
-          return np.sin(2 * np.pi * 100 * np.linspace(0, 0.2, 100)) + np.sin(2 * np.pi * 200 * np.linspace(0, 0.2, 100)) + np.sin(2 * np.pi * 300 * np.linspace(0, 0.2, 100))
+          return (np.sin(2 * np.pi * 100 * np.linspace(0, 0.2, 500)) + np.sin(2 * np.pi * 200 * np.linspace(0, 0.2, 500)) + np.sin(2 * np.pi * 300 * np.linspace(0, 0.2, 500)) + np.random.normal(0, 0.3, 500)) *  np.random.normal(1, 0.1, 500)
        
               
 
