@@ -10,8 +10,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . /iot_simulator
 
 ENTRYPOINT ["python3"]
-CMD ["main.py"]
+#CMD ["main.py"]
 
+# Use a shell command to loop and restart the Python script
+CMD ["sh", "-c", "while true; do python3 main.py; sleep 1; done"]
 
 FROM builder as dev-envs
 

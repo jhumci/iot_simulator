@@ -46,10 +46,7 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
     print("Bottle {} created at {}".format(bottle_counter,env.now))
     bottle_counter = bottle_counter +1 
 
-''' for debugging
-    if bottle_counter == 10:
-      break
-'''
+
 
 # %% Define the Environment
 
@@ -80,6 +77,7 @@ env.process(setup_unlimited(env, recipe_1, mqtt_client_handler))
 # %%
 # Run the simulation
 
-env.run()
+env.run(until = 10000)
 
+print("Simulation finished at {}".format(env.now))
 # %%
