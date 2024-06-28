@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 COPY . /iot_simulator
 
-ENTRYPOINT ["python3"]
+#ENTRYPOINT ["python3"]
 #CMD ["main.py"]
 
 # Use a shell command to loop and restart the Python script
