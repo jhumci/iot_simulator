@@ -47,37 +47,34 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
     bottle_counter = bottle_counter +1 
 
 
+if __name__ == "__main__":
+  print("This is the main file")
+  # %% Define the Environment
+  env = simpy.rt.RealtimeEnvironment(factor=1, strict=False)
 
-# %% Define the Environment
+  red = np.random.randint(0,30)
+  blue = np.random.randint(0,30)
+  green = np.random.randint(0,30)
 
-#env = simpy.Environment()
-# TODO: Why is the simulation too slow?
-env = simpy.rt.RealtimeEnvironment(factor=1,strict=False)
-recipe_1 = Recipe({"red":15,"blue":25,"green":5},"2024-02-16",20)
-recipe_1 = Recipe({"red":10,"blue":20,"green":15},"2024-02-16",21)
+  today = time.strftime("%Y-%m-%d")
+  id = int(time.time())%42
 
-# %% Define the dispensers in the factory
-# dispensers have a fill process
+  recipe_1 = Recipe({"red":red, "blue":blue, "green":green}, id,today)
 
-dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
-dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
-dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
+  # %% Define the dispensers in the factory
+  dispenser_1 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "red", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
+  dispenser_2 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "blue", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
+  dispenser_3 = dispenser(env, config.MAXIMUM_DISPENCER_SIZE_G, "green", config.MAXIMUM_DISPENCER_SIZE_G, mqtt_client_handler)
 
-dispensers = [dispenser_1, dispenser_2, dispenser_3]
+  dispensers = [dispenser_1, dispenser_2, dispenser_3]
 
-#%%
+  # Start the process that continuously checks the current fill level of the dispensers
+  env.process(dispenser_control(env, dispensers, config.THRESHOLD))
 
-# Starte the process, that continuously checks the current fill level of the dispensers
-env.process(dispenser_control(env, dispensers, config.THRESHOLD))
+  # Start the process that creates new bottles
+  env.process(setup_unlimited(env, recipe_1, mqtt_client_handler))
 
-# %%
-# Start the process that creates new bottles
-env.process(setup_unlimited(env, recipe_1, mqtt_client_handler))
+  # Run the simulation
+  env.run(until=10000)
 
-# %%
-# Run the simulation
-
-env.run(until = 10000)
-
-print("Simulation finished at {}".format(env.now))
-# %%
+  print("Simulation finished at {}".format(env.now))
