@@ -40,7 +40,8 @@ def setup_unlimited(env, recipe, mqtt_client_handler):
 
 
   while True:
-    bottle = Bottle(env,bottle_counter, recipe, dispensers, mqtt_client_handler)
+    bottle_id = str(int(time.time()))[-8:]
+    bottle = Bottle(env,bottle_id, recipe, dispensers, mqtt_client_handler)
     env.process(bottle.run(dispensers, env))
     yield env.timeout(2)    
     print("Bottle {} created at {}".format(bottle_counter,env.now))
