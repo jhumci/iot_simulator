@@ -11,7 +11,7 @@ class Recipe(object):
     self.creation_date = creation_date
 
   def start_iot_message(self):
-    return '{{"id": "{}", "creation_date" : {}, "color_levels_grams" : {}}}'.format(self.number, self.creation_date, json.dumps(self.color_levels_grams))
+    return '{{"id": "{}", "creation_date" : "{}", "color_levels_grams" : {}}}'.format(self.number, self.creation_date, json.dumps(self.color_levels_grams))
 
 class Bottle(object):
     def __init__(self, env, id, recipe, dispensers, mqtt_client):
